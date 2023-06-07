@@ -1,12 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const cors = require('cors');
+
 const uri = "mongodb+srv://tbounavo:FOFVHjf9F67dXdcP@cluster0.amccmlf.mongodb.net/?retryWrites=true&w=majority";
 
 const app = express();
-const port = 8023; // Replace with your desired port number
+const port = 8003; // Replace with your desired port number
 
 app.use(bodyParser.json());
+app.use(cors()); // Enable CORS for all routes
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -28,18 +31,6 @@ async function initializeDatabase() {
     if (!databaseExists) {
       await db.createCollection("logs");
       console.log("Created fishingLogs database and logs collection.");
-
-      // Generate random data
-      const randomLogs = [
-        { photo: "photo1.jpg", location: "Location 1", date: "2023-05-30", notes: "Random notes 1" },
-        { photo: "photo2.jpg", location: "Location 2", date: "2023-05-31", notes: "Random notes 2" },
-        { photo: "photo3.jpg", location: "Location 3", date: "2023-06-01", notes: "Random notes 3" }
-      ];
-
-      // Insert the random logs into the collection
-      const collection = db.collection("logs");
-      await collection.insertMany(randomLogs);
-      console.log("Inserted random logs into the logs collection.");
     } else {
       // Create the logs collection if it doesn't exist
       const collectionList = await db.listCollections().toArray();
@@ -62,11 +53,8 @@ async function saveLog(log) {
     const db = client.db("fishingLogs");
     const collection = db.collection("logs");
 
-    const { photo, location, date, notes } = log;
+    const { notes } = log;
     const result = await collection.insertOne({
-      photo: photo,
-      location: location,
-      date: date,
       notes: notes
     });
     console.log('Log saved successfully');
@@ -78,11 +66,8 @@ async function saveLog(log) {
 }
 
 app.post('/api/logs', (req, res) => {
-  const { photo, location, date, notes } = req.body;
+  const { notes } = req.body;
   const log = {
-    photo: photo,
-    location: location,
-    date: date,
     notes: notes
   };
 
