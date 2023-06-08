@@ -1,17 +1,22 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const multer = require('multer');
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const cors = require('cors');
-
-const uri = "mongodb+srv://tbounavo:FOFVHjf9F67dXdcP@cluster0.amccmlf.mongodb.net/?retryWrites=true&w=majority";
 
 const app = express();
-const port = 8003; // Replace with your desired port number
+const port = 8007; // Replace with your desired port number
 
-app.use(bodyParser.json());
-app.use(cors()); // Enable CORS for all routes
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const upload = multer({ storage: storage });
+
+const uri = "mongodb+srv://tbounavo:FOFVHjf9F67dXdcP@cluster0.amccmlf.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -19,6 +24,9 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 async function initializeDatabase() {
   try {
@@ -53,11 +61,7 @@ async function saveLog(log) {
     const db = client.db("fishingLogs");
     const collection = db.collection("logs");
 
-    const { notes } = log;
-
-    const result = await collection.insertOne({ text: log });
-    console.log('Log saved 1 successfully');
-
+    const result = await collection.insertOne(log);
     console.log('Log saved successfully');
   } catch (err) {
     console.error('Error saving log:', err);
@@ -66,10 +70,17 @@ async function saveLog(log) {
   }
 }
 
-app.post('/api/logs', (req, res) => {
-  const { notes } = req.body;
+app.post('/api/logs', upload.single('image'), (req, res) => {
+  const { species, size, weight, location, date } = req.body;
+  const image = req.file ? req.file.filename : null;
+
   const log = {
-    notes: notes
+    species: species,
+    size: size,
+    weight: weight,
+    location: location,
+    date: date,
+    image: image
   };
 
   saveLog(log)
@@ -79,16 +90,12 @@ app.post('/api/logs', (req, res) => {
 
 async function run() {
   try {
-    // Connect the client to the server (optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-    // Initialize the database and collections
     await initializeDatabase();
   } finally {
-    // Ensures that the client will close when you finish/error
     await client.close();
   }
 }
