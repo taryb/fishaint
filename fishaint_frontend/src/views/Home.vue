@@ -1,5 +1,5 @@
 <template>
-  <v-textarea v-model="notes" label="Log Text" rows="5"></v-textarea>
+  <v-textarea v-model="notes" label="Notes" rows="5"></v-textarea>
   <v-btn @click="submitLog">Submit</v-btn>
 </template>
 
@@ -18,7 +18,7 @@ export default {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ text: this.notes })
+          body: JSON.stringify({ notes: this.notes })
         });
         // Log submitted successfully, perform any desired actions
       } catch (error) {

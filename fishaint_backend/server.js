@@ -54,9 +54,10 @@ async function saveLog(log) {
     const collection = db.collection("logs");
 
     const { notes } = log;
-    const result = await collection.insertOne({
-      notes: notes
-    });
+
+    const result = await collection.insertOne({ text: log });
+    console.log('Log saved 1 successfully');
+
     console.log('Log saved successfully');
   } catch (err) {
     console.error('Error saving log:', err);
