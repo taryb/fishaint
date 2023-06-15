@@ -89,6 +89,12 @@ export default {
       return date.toLocaleString();
     }
   },
+  computed: {
+    lastUpdated() {
+      const date = new Date();
+      return date.toLocaleString();
+    }
+  },
   methods: {
     async submitFish() {
       try {
@@ -122,9 +128,6 @@ export default {
         const response = await fetch('http://localhost:8009/api/logs');
         if (response.ok) {
           this.fishEntries = await response.json();
-          this.fishEntries.forEach(entry => {
-            console.log(entry);
-          });
         } else {
           this.showSnackbar('Error fetching fish entries', 'error');
         }
