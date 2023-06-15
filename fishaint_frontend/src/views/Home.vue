@@ -56,6 +56,10 @@
       </v-col>
     </v-row>
 
+    <v-container fluid>
+      <p class="text-center mt-5">Last Updated: {{ lastUpdated }}</p>
+    </v-container>
+
     <v-snackbar v-model="snackbar" :timeout="3000" :color="snackbarColor">
       {{ snackbarMessage }}
     </v-snackbar>
@@ -80,6 +84,12 @@ export default {
       snackbarColor: ''
     };
   },
+  computed: {
+    lastUpdated() {
+      const date = new Date();
+      return date.toLocaleString();
+    }
+  },
   methods: {
     async submitFish() {
       try {
@@ -91,7 +101,7 @@ export default {
         formData.append('date', this.fish.date);
         formData.append('image', this.fish.image);
 
-        const response = await fetch('http://localhost:8007/api/logs', {
+        const response = await fetch('http://localhost:8008/api/logs', {
           method: 'POST',
           body: formData
         });
@@ -110,9 +120,12 @@ export default {
     },
     async fetchFishEntries() {
       try {
-        const response = await fetch('http://localhost:8007/api/logs');
+        const response = await fetch('http://localhost:8008/api/logs');
         if (response.ok) {
           this.fishEntries = await response.json();
+          this.fishEntries.forEach(entry => {
+          console.log(entry);
+      });
         } else {
           this.showSnackbar('Error fetching fish entries', 'error');
         }

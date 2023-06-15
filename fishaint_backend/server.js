@@ -1,9 +1,10 @@
 const express = require('express');
 const multer = require('multer');
+const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const app = express();
-const port = 8007; // Replace with your desired port number
+const port = 8008; // Replace with your desired port number
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,7 +25,11 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+const corsOptions = {
+  origin: 'http://localhost:3000',
+};
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
