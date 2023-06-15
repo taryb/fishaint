@@ -12,7 +12,6 @@
               <v-text-field v-model="fish.location" label="Location" required></v-text-field>
               <v-text-field v-model="fish.date" label="Date" type="date" required></v-text-field>
               <v-file-input
-                v-model="fish.image"
                 label="Image"
                 accept="image/*"
                 prepend-icon="mdi-camera"
@@ -101,7 +100,7 @@ export default {
         formData.append('date', this.fish.date);
         formData.append('image', this.fish.image);
 
-        const response = await fetch('http://localhost:8008/api/logs', {
+        const response = await fetch('http://localhost:8009/api/logs', {
           method: 'POST',
           body: formData
         });
@@ -120,12 +119,12 @@ export default {
     },
     async fetchFishEntries() {
       try {
-        const response = await fetch('http://localhost:8008/api/logs');
+        const response = await fetch('http://localhost:8009/api/logs');
         if (response.ok) {
           this.fishEntries = await response.json();
           this.fishEntries.forEach(entry => {
-          console.log(entry);
-      });
+            console.log(entry);
+          });
         } else {
           this.showSnackbar('Error fetching fish entries', 'error');
         }

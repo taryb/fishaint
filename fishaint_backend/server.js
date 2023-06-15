@@ -4,7 +4,7 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const app = express();
-const port = 8008; // Replace with your desired port number
+const port = 8009; // Replace with your desired port number
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -91,6 +91,22 @@ app.post('/api/logs', upload.single('image'), (req, res) => {
   saveLog(log)
     .then(() => res.sendStatus(200))
     .catch(() => res.status(500).send('Error saving log'));
+});
+
+app.get('/api/logs', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db("fishingLogs");
+    const collection = db.collection("logs");
+
+    const fishEntries = await collection.find({}).toArray();
+    res.json(fishEntries);
+  } catch (err) {
+    console.error('Error fetching fish entries:', err);
+    res.status(500).send('Error fetching fish entries');
+  } finally {
+    await client.close();
+  }
 });
 
 async function run() {
