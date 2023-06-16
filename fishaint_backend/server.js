@@ -2,9 +2,10 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const path = require('path');
 
 const app = express();
-const port = 8009; // Replace with your desired port number
+const port = 8081; // Replace with your desired port number
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -26,12 +27,13 @@ const client = new MongoClient(uri, {
   }
 });
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:3002',
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 async function initializeDatabase() {
   try {
@@ -122,6 +124,10 @@ async function run() {
 }
 
 run().catch(console.dir);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
