@@ -5,7 +5,6 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const path = require('path');
 
 const app = express();
-const port = 8081; // Replace with your desired port number
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -26,8 +25,9 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+
 const corsOptions = {
-  origin: 'http://localhost:3002',
+  origin: 'https://fishaint-taryb.vercel.app',
 };
 
 app.use(cors(corsOptions));
@@ -77,6 +77,10 @@ async function saveLog(log) {
   }
 }
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.post('/api/logs', upload.single('image'), (req, res) => {
   const { species, size, weight, location, date } = req.body;
   const image = req.file ? req.file.filename : null;
@@ -125,10 +129,6 @@ async function run() {
 
 run().catch(console.dir);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server running on port ${process.env.PORT || 3000}`);
 });
