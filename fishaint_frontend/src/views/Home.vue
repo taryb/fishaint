@@ -89,12 +89,6 @@ export default {
       return date.toLocaleString();
     }
   },
-  computed: {
-    lastUpdated() {
-      const date = new Date();
-      return date.toLocaleString();
-    }
-  },
   methods: {
     async submitFish() {
       try {
