@@ -22,6 +22,7 @@
     "@types/node": "^18.15.0",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^3.0.3",
+    "@vue/cli-plugin-pwa": "^5.0.8",
     "@vue/eslint-config-typescript": "^11.0.0",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
