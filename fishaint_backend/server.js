@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 });
 
 const corsOptions = {
-  origin: 'https://fishaint-taryb.vercel.app',
+  origin: 'https://fishaint.vercel.app',
 };
 
 app.use(cors(corsOptions));
