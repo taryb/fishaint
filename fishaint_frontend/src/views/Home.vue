@@ -100,7 +100,7 @@ export default {
         formData.append('date', this.fish.date);
         formData.append('image', this.fish.image);
 
-        const response = await fetch('https://fishaint-taryb.vercel.app/api/logs', {
+        const response = await fetch('/api/logs', {
           method: 'POST',
           body: formData
         });
@@ -119,7 +119,7 @@ export default {
     },
     async fetchFishEntries() {
       try {
-        const response = await fetch('https://fishaint-taryb.vercel.app/api/logs');
+        const response = await fetch('/api/logs');
         if (response.ok) {
           this.fishEntries = await response.json();
         } else {

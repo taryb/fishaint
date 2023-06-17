@@ -7,7 +7,7 @@
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Fishain</v-toolbar-title>
+      <v-toolbar-title>Fishaint</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
